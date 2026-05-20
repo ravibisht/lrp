@@ -1,0 +1,78 @@
+name: LRP Build & Deploy
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Install Node.js ESM/CJS Runtime (Node 22)
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: 'npm'
+
+    - name: Install NPM Dependencies
+      run: npm ci
+
+    - name: Validate TypeScript & Linter
+      run: npm run lint
+
+    - name: Compile and Bundle Production Build
+      run: npm run build
+      env:
+        NODE_ENV: production
+
+    # Optional Build Artifact Storage
+    - name: Secure Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: lrp-build-dist
+        path: dist/
+        retention-days: 7
+
+  # Highly-requested Cloud Run continuous deployment blueprint
+  # To enable this, configure automatic Google Cloud credentials inside your GitHub repository secrets.
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # -----------------------------------------------------------------------------------
+    # NOTE: Uncomment and set credentials when syncing with your real Google Cloud Project
+    # -----------------------------------------------------------------------------------
+    # - name: Authenticate to Google Cloud
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    # - name: Set up Cloud SDK
+    #   uses: google-github-actions/setup-gcloud@v2
+
+    # - name: Configure Docker authentication
+    #   run: gcloud auth configure-docker
+
+    # - name: Build and Push Container to Artifact Registry
+    #   run: |
+    #     docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/lrp-sarkar:${{ github.sha }} .
+    #     docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/lrp-sarkar:${{ github.sha }}
+
+    # - name: Deploy to Cloud Run
+    #   uses: google-github-actions/deploy-cloudrun@v2
+    #   with:
+    #     service: lrp-sarkar
+    #     image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/lrp-sarkar:${{ github.sha }}
+    #     region: us-central1
+    #     env_vars: |
+    #       GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
