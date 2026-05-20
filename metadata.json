@@ -1,0 +1,6 @@
+{
+  "name": "Lakshman Rekha Party (LRP)",
+  "description": "An interactive, satirical youth movement and parody Indian political party website. Features a manifestos, customizable voter ID cards, memes, a cockroach-defense chalk mini-game, and an AI Rekha Auditor to critique CJP cockroach sympathizers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
