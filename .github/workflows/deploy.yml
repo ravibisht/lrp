@@ -44,14 +44,18 @@ jobs:
           git fetch origin master
           git checkout master
 
-          # Wipe everything in master root
+          # Wipe everything EXCEPT node_modules
           git rm -rf . --quiet
 
-          # Copy dist contents to root (only dist, nothing else)
+          # Copy dist contents to root
           cp -r /tmp/dist-output/. .
 
-          # Commit and push
+          # Ensure node_modules is ignored in master too
+          echo "node_modules/" > .gitignore
+
+          # Stage everything — .gitignore will prevent node_modules from being added
           git add -A
+
           git commit -m "Deploy: main@${{ github.sha }}" || echo "Nothing to commit"
           git push origin master
         env:
