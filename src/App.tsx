@@ -3,6 +3,8 @@ import { MANIFESTO_ITEMS, MEME_POSTERS, QUIZ_QUESTIONS, CUSTOM_AVATARS } from ".
 import ChalkDefenseGame from "./components/ChalkDefenseGame";
 import VoterCardGenerator from "./components/VoterCardGenerator";
 import RekhaAuditor from "./components/RekhaAuditor";
+import ChappalSmashGame from "./components/ChappalSmashGame";
+import RekhaOathScanner from "./components/RekhaOathScanner";
 import { 
   Shield, 
   Info, 
@@ -346,6 +348,19 @@ export default function App() {
               REKHA COMPLIANCE EXAMINER
             </span>
             <RekhaAuditor />
+          </div>
+        </div>
+
+        {/* SECTION: Mobile Task Force (Games & Scanners) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-4 border-black bg-zinc-100">
+          {/* Left panel: Chappal Smash (Mobile Interactive) */}
+          <div className="lg:col-span-6 border-b-4 lg:border-b-0 lg:border-r-4 border-black bg-white p-4 sm:p-6 md:p-8 flex flex-col">
+             <ChappalSmashGame />
+          </div>
+
+          {/* Right panel: Rekha Oath Scanner (Mobile Interactive) */}
+          <div className="lg:col-span-6 bg-[#FFD700] p-4 sm:p-6 md:p-8 flex flex-col">
+             <RekhaOathScanner />
           </div>
         </div>
 
