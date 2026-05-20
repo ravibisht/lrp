@@ -234,6 +234,14 @@ export default function App() {
                       avatarId={avatarId} setAvatarId={setAvatarId}
                       setCardId={setCardId}
                     />
+                    
+                    {/* Oath Scanner Container */}
+                    <div className="w-full aspect-square md:aspect-auto md:h-full min-h-[400px] rounded-2xl border-2 border-zinc-900 shadow-[4px_4px_0_#18181b] bg-zinc-900 relative">
+                       <div className="absolute inset-0 p-4 md:p-6 pb-6">
+                         <RekhaOathScanner />
+                       </div>
+                    </div>
+
                     <RallyChantsWidget />
                   </div>
                 </div>
@@ -354,12 +362,6 @@ export default function App() {
                </div>
             </div>
             
-            {/* Oath Scanner Container */}
-            <div className="max-w-md mx-auto aspect-square rounded-2xl overflow-hidden border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] bg-zinc-900 relative">
-               <div className="absolute inset-0 p-4 md:p-6">
-                 <RekhaOathScanner />
-               </div>
-            </div>
           </div>
         </div>
 

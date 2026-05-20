@@ -53,7 +53,7 @@ export default function RekhaOathScanner() {
   };
 
   return (
-    <div className="bg-black text-white border-4 border-black shadow-[6px_6px_0px_#000] p-6 sm:p-8 flex flex-col justify-between h-full font-mono relative">
+    <div className="bg-black text-white border-4 border-black shadow-[6px_6px_0px_#000] p-6 sm:p-8 flex flex-col justify-between h-full font-mono relative overflow-y-auto custom-scrollbar">
       <div>
         <div className="flex justify-between items-center border-b-2 border-white pb-4 mb-4">
           <h3 className="font-display font-black text-xl uppercase tracking-tighter text-[#FFD700] flex items-center gap-2">
