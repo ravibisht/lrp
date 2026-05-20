@@ -93,10 +93,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFD700] text-[#1A1A1A] flex flex-col font-sans selection:bg-black selection:text-[#FFD700] p-3 sm:p-5 md:p-8 relative">
+    <div className="min-h-screen bg-white text-[#1A1A1A] flex flex-col font-sans selection:bg-black selection:text-[#FFD700] p-0 relative">
       
       {/* Outer Brutalist Frame enclosing the whole campaign page */}
-      <div className="w-full max-w-7xl mx-auto bg-white border-[8px] sm:border-[12px] border-black shadow-[12px_12px_0px_#000] flex flex-col">
+      <div className="w-full bg-white flex flex-col">
         
         {/* Top Ticker representing bold Indian election posters */}
         <div className="bg-black text-white border-b-4 border-black text-xs font-mono font-black tracking-[0.2em] text-center py-3.5 px-4 overflow-hidden relative">
@@ -455,7 +455,7 @@ export default function App() {
       </div>
 
       {/* Brutalist Footer matches Design HTML marquee feel */}
-      <footer className="mt-12 max-w-7xl mx-auto w-full border-[8px] border-black bg-black text-white py-8 px-6 text-center font-mono text-[10px] tracking-wide relative shadow-[8px_8px_0_rgba(0,0,0,1)]">
+      <footer className="mt-12 w-full border-t-8 border-black bg-black text-white py-8 px-6 text-center font-mono text-[10px] tracking-wide relative">
         <div className="whitespace-nowrap flex justify-center gap-6 sm:gap-12 text-xs font-black uppercase tracking-[0.2em] mb-6 overflow-hidden border-b border-zinc-800 pb-4">
           <span>STAY IN YOUR LANE</span>
           <span>•</span>
