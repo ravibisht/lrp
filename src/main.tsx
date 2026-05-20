@@ -4,7 +4,8 @@ import App from './App.tsx';
 import ReactGA from 'react-ga4';
 import './index.css';
 
-const trackingId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+// Google Analytics Measurement ID
+const trackingId = "G-7TM5VG02FN";
 if (trackingId) {
   ReactGA.initialize(trackingId);
   ReactGA.send({ hitType: "pageview", page: window.location.pathname });
