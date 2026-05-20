@@ -9,8 +9,8 @@ export default function AnthemPlayer() {
 
   // Uses files placed in the /public directory.
   const audioUrls = {
-    hindi: "/rekha_kecho_v1.mp3",
-    english: "/rekha_kecho_v1.mp3"
+    hindi: encodeURI("./REKHA KHEECHO x REKHA KHEECHO (Mashup).mp3"),
+    english: encodeURI("./REKHA KHEECHO x REKHA KHEECHO (Mashup).mp3")
   };
 
   const hasInteracted = useRef(false);
