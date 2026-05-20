@@ -33,19 +33,21 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Save the Vite build output
+          # Save only the dist folder
           cp -r dist /tmp/dist-output
 
-          # Discard any uncommitted changes (like regenerated package-lock.json)
+          # Discard uncommitted changes
           git checkout -- .
-          git clean -fd
+          git clean -fd --exclude=node_modules
 
           # Switch to master
           git fetch origin master
           git checkout master
 
-          # Wipe everything and replace with dist contents
+          # Wipe everything in master root
           git rm -rf . --quiet
+
+          # Copy dist contents to root (only dist, nothing else)
           cp -r /tmp/dist-output/. .
 
           # Commit and push
