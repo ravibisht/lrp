@@ -31,10 +31,14 @@ jobs:
       - name: Deploy dist/ to master branch root
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "bhupenders225@gmail.com"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Save the Vite build output
           cp -r dist /tmp/dist-output
+
+          # Discard any uncommitted changes (like regenerated package-lock.json)
+          git checkout -- .
+          git clean -fd
 
           # Switch to master
           git fetch origin master
