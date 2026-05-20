@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { MANIFESTO_ITEMS, MEME_POSTERS, QUIZ_QUESTIONS, CUSTOM_AVATARS } from "./data";
 import ChalkDefenseGame from "./components/ChalkDefenseGame";
-import VoterCardGenerator from "./components/VoterCardGenerator";
+import { VoterCardForm, VoterCardPreview, generateNewCardId } from "./components/VoterCardGenerator";
+import RallyChantsWidget from "./components/RallyChantsWidget";
 import RekhaAuditor from "./components/RekhaAuditor";
 import ChappalSmashGame from "./components/ChappalSmashGame";
 import RekhaOathScanner from "./components/RekhaOathScanner";
+import AnthemPlayer from "./components/AnthemPlayer";
 import { 
   Shield, 
   Info, 
@@ -27,10 +29,12 @@ export default function App() {
   const [quizFinished, setQuizFinished] = useState(false);
   const [selectedOpt, setSelectedOpt] = useState<number | null>(null);
 
-  // Custom User Slogan Generator Fallback state
-  const [customTopic, setCustomTopic] = useState("");
-  const [genSlogan, setGenSlogan] = useState("");
-  const [isGenLoading, setIsGenLoading] = useState(false);
+  // Voter Card States
+  const [name, setName] = useState("Rahul Shrivastava");
+  const [designation, setDesignation] = useState(CUSTOM_AVATARS[0].name);
+  const [avatarId, setAvatarId] = useState(CUSTOM_AVATARS[0].id);
+  const [cardId, setCardId] = useState(() => generateNewCardId());
+  const [stampActive, setStampActive] = useState(true);
 
   const handleNextQuiz = (points: number) => {
     setQuizScore((prev) => prev + points);
@@ -74,423 +78,378 @@ export default function App() {
     setSelectedOpt(null);
   };
 
-  // Call backend to generate funny topic slogan
-  const handleGenerateSlogan = async () => {
-    if (!customTopic.trim()) return;
-    setIsGenLoading(true);
-    setGenSlogan("");
-    try {
-      const response = await fetch("/api/generate-slogan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: customTopic })
-      });
-      const data = await response.json();
-      setGenSlogan(data.slogan || "Chalk uthao, sansaar bachao!");
-    } catch {
-      setGenSlogan("Border ke is paar dildar, border ke us paar bekar!");
-    } finally {
-      setIsGenLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-white text-[#1A1A1A] flex flex-col font-sans selection:bg-black selection:text-[#FFD700] p-0 relative">
+    <div className="min-h-screen bg-[#F4F4F0] text-zinc-900 flex flex-col font-sans selection:bg-[#FFD700] selection:text-black p-0 relative overflow-x-hidden">
       
-      {/* Outer Brutalist Frame enclosing the whole campaign page */}
-      <div className="w-full bg-white flex flex-col">
+      {/* Sleek yet Satirical Outer Frame */}
+      <AnthemPlayer />
+      <div className="w-full flex flex-col items-center">
         
-        {/* Top Ticker representing bold Indian election posters */}
-        <div className="bg-black text-white border-b-4 border-black text-xs font-mono font-black tracking-[0.2em] text-center py-3.5 px-4 overflow-hidden relative">
-          <div className="inline-block animate-[pulse_2s_infinite_alternate] whitespace-nowrap">
-            LATEST LRP CAMPAIGN DESPATCH: "CHALK IN HAND, BOUNDARY ON LAND!" • NEW POLLS: LRP SURGES TO 98% IN MULTIPLE HOSTELS • STRICT BOUNDARIES! 🏁
-          </div>
+        {/* Themed Ticker */}
+        <div className="w-full bg-[#FFD700] border-b-2 border-zinc-900 text-zinc-900 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-center py-2.5 px-4 flex justify-center items-center gap-3 overflow-hidden whitespace-nowrap">
+          <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse hidden sm:block"></span>
+          <span>🚨 LATEST DESPATCH: "CHALK IN HAND, BOUNDARY ON LAND!" • NEW POLLS: LRP SURGES TO 98% • DEFEAT CJP SECRECY! 🚨</span>
         </div>
 
-        {/* Clean, High-Contrast Header in line with Artistic Flair */}
-        <header className="flex flex-col md:flex-row justify-between items-center px-6 sm:px-8 py-6 border-b-4 border-black bg-white gap-6">
+        {/* Modern Satire Header */}
+        <header className="flex flex-col md:flex-row w-full max-w-7xl justify-between items-center px-6 md:px-12 py-8 bg-transparent space-y-6 md:space-y-0 relative">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-black flex items-center justify-center rounded-none border-2 border-black shadow-[4px_4px_0_#FFD700]">
-              <span className="text-3xl relative animate-pulse select-none">🎯</span>
+            <div className="w-12 h-12 bg-zinc-900 text-[#FFD700] border-2 border-zinc-900 flex items-center justify-center rounded-xl shadow-[4px_4px_0_#18181b] rotate-[-2deg] transition-transform hover:rotate-0">
+              <Shield className="w-6 h-6" />
             </div>
-            <div className="leading-none">
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tighter uppercase font-display">
-                LRP SARKAR <span className="text-sm bg-[#FFD700] text-black border border-black px-2 py-0.5 font-mono inline-block font-black ml-1">OFFICIAL PARODY</span>
+            <div>
+              <h1 className="text-2xl font-black tracking-tighter text-zinc-900 uppercase flex items-center gap-2">
+                Lakshman Rekha Party
+                <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-md uppercase tracking-widest font-bold shadow-[2px_2px_0_#18181b]">Parody</span>
               </h1>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] font-mono mt-1 text-zinc-500">
-                LAKSHMAN REKHA PARTY • DIGITAL BOUNDARY INITIATIVE
-              </p>
+              <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mt-0.5">The anti-roach initiative</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 font-mono text-xs">
-            <div className="px-4 py-2 bg-[#FFD700] border-2 border-black font-black flex items-center gap-2 shadow-[3px_3px_0_#000]">
-              <TrendingUp className="w-4 h-4 text-black" />
-              <span>CJP PANIC LEVEL: 97.4%</span>
-            </div>
-            <div className="px-4 py-2 bg-black text-white border-2 border-black font-black flex items-center gap-2 shadow-[3px_3px_0_#FFD700]">
-              <Award className="w-4 h-4 text-[#FFD700] animate-pulse" />
-              <span>CHALK LEVEL: HIGH SPEED</span>
+          <div className="flex items-center gap-4 font-mono text-xs font-bold">
+            <div className="flex items-center gap-2 bg-white border-2 border-zinc-900 px-3 py-1.5 rounded-lg shadow-[2px_2px_0_#18181b]">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-bounce"></span>
+              <span>CJP Panic: 97.4%</span>
             </div>
           </div>
         </header>
 
-        {/* Dynamic Vertical / Horizontal Promo Divider Grid */}
-        <div className="grid grid-cols-12 gap-0 border-b-4 border-black bg-black">
-          <div className="col-span-12 md:col-span-1 bg-black text-white p-4 flex md:flex-col justify-center items-center gap-2 border-b-4 md:border-b-0 md:border-r-4 border-black">
-            <p className="md:vertical-rl md:rotate-180 text-[10px] font-black tracking-[0.4em] uppercase text-[#FFD700] text-center">
-              MARYADA • BOUNDARIES • CLEAN DESK
-            </p>
-          </div>
-
-          {/* Central Hero Parody Banner */}
-          <div className="col-span-12 md:col-span-7 bg-[#FFD700] p-6 sm:p-10 md:p-12 flex flex-col justify-between relative min-h-[300px]">
-            <div className="absolute top-0 right-0 w-24 h-24 border-l-4 border-b-4 border-black opacity-15" />
+        {/* Punchy Hero Section */}
+        <div className="w-full max-w-7xl px-6 md:px-12 py-12 md:py-20 flex flex-col md:flex-row gap-12 md:gap-24 items-center">
+          
+          <div className="flex-1 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border-2 border-zinc-900 shadow-[2px_2px_0_#18181b] rounded-lg text-zinc-900 text-xs font-bold tracking-wider uppercase mb-2">
+              <span>📜 The Border Manifesto</span>
+            </div>
             
-            <div className="space-y-4">
-              <span className="bg-black text-white px-3 py-1 text-xs font-bold uppercase tracking-widest inline-block">
-                🚩 THE BORDER MANIFESTO RESOLUTION
-              </span>
-              <h2 className="text-4xl sm:text-6xl md:text-7xl leading-[0.9] font-black tracking-tighter uppercase">
-                The Line<br /><span className="text-white drop-shadow-[4px_4px_0_rgba(0,0,0,1)]">is Drawn.</span>
-              </h2>
-              <p className="text-lg sm:text-xl font-bold italic border-l-4 sm:border-l-8 border-black pl-4 max-w-xl text-[#1A1A1A]">
-                "Cockroaches belong in dark, unorganized corners. Clean work desks belong to the sovereign leaders of LRP. Choose your side!"
-              </p>
-            </div>
+            <h2 className="text-5xl md:text-7xl font-sans font-black tracking-tighter leading-tight text-zinc-900 uppercase">
+              Discipline <br/>
+              <span className="text-[#FFD700] translate-x-2 inline-block font-sans italic drop-shadow-[2px_2px_0_rgba(24,24,27,1)] [-webkit-text-stroke:2px_#18181b]">is the baseline.</span>
+            </h2>
+            
+            <p className="text-lg md:text-xl text-zinc-700 font-medium leading-relaxed max-w-xl border-l-4 border-[#FFD700] pl-4">
+              Cockroaches belong in dark corners. Clean workspaces belong to sovereign leaders. Draw your lines, respect your boundaries, and defeat the lazy CJP mindset.
+            </p>
 
-            <div className="pt-6 mt-6 border-t-2 border-black grid grid-cols-2 gap-4 font-mono text-xs">
-              <div>
-                <p className="font-extrabold uppercase text-black">🚀 ACTIVE DIRECTIVE</p>
-                <p className="text-zinc-700">Wipe tables daily, draw borders around dishes, and throw slippers at slop.</p>
+            <div className="pt-6 flex flex-col sm:flex-row gap-6 text-sm">
+              <div className="flex-1 bg-white border-2 border-zinc-900 p-4 rounded-xl shadow-[4px_4px_0_#18181b]">
+                <span className="text-emerald-600 text-[10px] font-black uppercase tracking-widest block mb-1">✅ Active Directive</span>
+                <p className="text-zinc-800 font-medium leading-snug">Wipe tables daily, draw chalk borders around dishes, maintain desk integrity.</p>
               </div>
-              <div>
-                <p className="font-extrabold uppercase text-[#ef4444]">⚔️ ENEMY BEHAVIOR</p>
-                <p className="text-zinc-700">Eating dry instant noodles at 3 AM in hostel beds while scrolling social media feeds.</p>
+              <div className="flex-1 bg-zinc-900 border-2 border-zinc-900 p-4 rounded-xl shadow-[4px_4px_0_#FFD700]">
+                <span className="text-rose-400 text-[10px] font-black uppercase tracking-widest block mb-1">🚫 Adversary Behavior</span>
+                <p className="text-zinc-100 font-medium leading-snug">Consuming dry noodles at 3 AM in bed while doom-scrolling social feeds.</p>
               </div>
             </div>
           </div>
 
-          {/* Slogan Sandbox Widget */}
-          <div className="col-span-12 md:col-span-4 bg-white p-6 sm:p-8 flex flex-col justify-between border-t-4 md:border-t-0 border-black">
-            <div className="space-y-4">
-              <span className="bg-black text-white px-2 py-0.5 text-[10px] font-black uppercase tracking-wider inline-block">
-                SYNTH ENGINE V2
-              </span>
-              <h3 className="font-display font-black uppercase text-xl tracking-tight text-black flex items-center gap-2">
-                <Flame className="w-5 h-5 text-[#FFD700] fill-black" /> RALLY CHANT SYNDICATE
-              </h3>
-              <p className="text-xs text-zinc-600 font-mono leading-relaxed">
-                Enter any mundane routine chore to synthesize an election-grade rally slogan for LRP!
-              </p>
-              
-              <div className="space-y-3 font-mono text-xs">
+          {/* Hero Widget Area */}
+          <div className="flex-1 w-full max-w-sm ml-auto space-y-4">
+            <VoterCardPreview
+              name={name}
+              designation={designation}
+              avatarId={avatarId}
+              cardId={cardId}
+              stampActive={stampActive}
+              setStampActive={setStampActive}
+            />
+            {/* Quick Edit for Hero */}
+            <div className="bg-white p-3 rounded-xl border-2 border-zinc-900 shadow-[4px_4px_0_#18181b] flex flex-col gap-3 relative z-10 w-full max-w-sm mx-auto">
+              <div>
+                <label className="text-zinc-600 font-black text-[10px] uppercase tracking-widest px-1 mb-1 block">QUICK EDIT NAME</label>
                 <input
                   type="text"
-                  value={customTopic}
-                  onChange={(e) => setCustomTopic(e.target.value)}
-                  className="w-full brutalist-input px-3.5 py-2.5 text-xs focus:ring-0"
-                  placeholder="e.g. Washing towels, reading core Java"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  maxLength={26}
+                  className="w-full bg-[#f4f4f0] border-2 border-black text-black px-3 py-2 text-sm focus:outline-none focus:ring-0 font-sans font-bold shadow-inner"
+                  placeholder="Enter full name..."
                 />
-                <button
-                  type="button"
-                  onClick={handleGenerateSlogan}
-                  disabled={isGenLoading || !customTopic.trim()}
-                  className="w-full brutalist-button-dark py-2.5 text-xs cursor-pointer"
-                >
-                  {isGenLoading ? "CONSTRUCTING CHANT..." : "CHURN MEME RALLY CHANT"}
-                </button>
               </div>
-            </div>
-
-            <div className="mt-6 pt-4 border-t-2 border-dashed border-black">
-              {genSlogan ? (
-                <div className="p-3 bg-[#FFD700]/10 border-2 border-black shadow-[3px_3px_0_#1A1A1A] relative overflow-hidden animate-fade-in">
-                  <div className="absolute right-1 bottom-1 text-2xl opacity-10 select-none">📢</div>
-                  <span className="text-[9px] text-zinc-500 font-mono block uppercase font-bold mb-1">Generated Output:</span>
-                  <p className="text-black font-display font-black text-sm italic leading-tight">
-                    "{genSlogan}"
-                  </p>
+              <div>
+                <label className="text-zinc-600 font-black text-[10px] uppercase tracking-widest px-1 mb-1 block">FORCE ICON</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {CUSTOM_AVATARS.slice(0, 3).map((av) => (
+                    <button
+                      key={av.id}
+                      onClick={() => {
+                        setAvatarId(av.id);
+                        setDesignation(av.name);
+                      }}
+                      className={`py-1.5 rounded-none border-2 text-center transition flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
+                        avatarId === av.id
+                          ? "bg-black text-[#FFD700] border-black shadow-[2px_2px_0_#FFD700]"
+                          : "bg-white text-zinc-700 border-black hover:bg-zinc-100 shadow-[1px_1px_0_#000]"
+                      }`}
+                    >
+                      <span className="text-lg">{av.icon}</span>
+                      <span className="text-[8px] font-sans font-black truncate w-full px-1">{av.name.split(" ")[0]}</span>
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <p className="text-[10px] text-zinc-500 font-mono italic text-center">
-                  *Slogans are certified by the high chanter council.
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* SECTION: The Chalk Defense Game Canvas */}
-        <div id="game-simulator" className="border-b-4 border-black bg-[#FFD700] p-4 sm:p-6 md:p-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="bg-black text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
-                WARZONE EXERCISE 01
-              </span>
-              <span className="text-xs font-mono font-bold text-black uppercase">
-                DEFEND THE BORDER ZONE
-              </span>
-            </div>
-            {/* The actual modular game element */}
-            <ChalkDefenseGame />
-          </div>
-        </div>
-
-        {/* SECTION: Voter Card Generator and Quiz Bento */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-4 border-black bg-zinc-100">
-          
-          {/* Left panel: Voter ID Generator */}
-          <div className="lg:col-span-7 border-b-4 lg:border-b-0 lg:border-r-4 border-black bg-white p-4 sm:p-6 md:p-8" id="voter-card">
-            <VoterCardGenerator />
-          </div>
-
-          {/* Right panel: CJP Alignment Quiz */}
-          <div className="lg:col-span-5 bg-[#FFD700]/25 p-6 sm:p-8 flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b-2 border-black pb-3">
-                <h3 className="font-display font-black text-black text-xl tracking-tighter uppercase flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-black" /> ROACH CONTAMINATION TEST
-                </h3>
-                <span className="text-[10px] bg-black text-white font-mono px-2 py-0.5 font-black uppercase">
-                  DIAGNOSTIC
-                </span>
               </div>
-              <p className="text-xs text-zinc-700 font-mono leading-relaxed">
-                Submit raw credentials to calculate your room integrity index. Are you fit to lead or contaminated by CJP crawl culture?
-              </p>
+            </div>
+          </div>
+        </div>
 
-              {!quizFinished ? (
-                <div className="space-y-4 bg-white p-4 border-2 border-black shadow-[4px_4px_0_#000] mt-2">
-                  <div className="flex justify-between items-center text-xs font-mono font-bold">
-                    <span className="text-zinc-500 uppercase">STEP {quizStep + 1} OF {QUIZ_QUESTIONS.length}</span>
-                    <span className="text-black font-black">REKHA ANALYZER</span>
+        {/* Interactive Modules Container */}
+        <div className="w-full bg-white border-t-2 border-zinc-900">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-24">
+            
+            {/* Section: Games */}
+            <div className="space-y-8">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-black tracking-tight text-zinc-900 uppercase flex items-center gap-3">
+                    Interactive Diagnostics <span className="text-2xl">🕹️</span>
+                  </h3>
+                  <p className="text-zinc-600 font-medium">Test your readiness and combat training in isolated simulation zones.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Embedded game components */}
+                <div className="rounded-2xl overflow-hidden border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] h-[550px] relative bg-[#FFD700]">
+                  <div className="absolute top-0 left-0 w-full h-full transform scale-[0.98] origin-top md:scale-[0.85] md:origin-top-left md:-ml-4 overflow-y-auto overflow-x-hidden pt-4 no-scrollbar">
+                    <ChalkDefenseGame />
                   </div>
+                </div>
+                <div className="rounded-2xl overflow-hidden border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] h-[550px] bg-zinc-50 relative">
+                   <div className="absolute inset-0 p-4 overflow-y-auto no-scrollbar pb-6">
+                      <ChappalSmashGame />
+                   </div>
+                </div>
+              </div>
+            </div>
 
-                  <div className="w-full bg-zinc-200 h-2.5 border border-black overflow-hidden m-0">
-                    <div 
-                      className="h-full bg-black duration-300 transition-all"
-                      style={{ width: `${((quizStep + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
+            {/* Section: Voter ID & Audit */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <div className="lg:col-span-7 rounded-2xl border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] overflow-hidden relative bg-white h-[580px]">
+                <div className="absolute top-4 left-4 z-10 bg-[#FFD700] border-2 border-zinc-900 shadow-[2px_2px_0_#18181b] rounded-lg px-3 py-1 text-xs font-black uppercase tracking-widest text-zinc-900">ID Registry</div>
+                <div className="absolute inset-x-0 bottom-0 top-12 overflow-y-auto no-scrollbar pb-6 px-4">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+                    <VoterCardForm
+                      name={name} setName={setName}
+                      designation={designation} setDesignation={setDesignation}
+                      avatarId={avatarId} setAvatarId={setAvatarId}
+                      setCardId={setCardId}
                     />
+                    <RallyChantsWidget />
                   </div>
-
-                  <h4 className="font-display font-black text-black text-sm tracking-tight leading-snug pt-1">
-                    {QUIZ_QUESTIONS[quizStep].question}
-                  </h4>
-
-                  <div className="space-y-2 font-mono text-xs pt-1">
-                    {QUIZ_QUESTIONS[quizStep].options.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedOpt(idx)}
-                        className={`w-full text-left p-3 border-2 transition font-medium ${
-                          selectedOpt === idx
-                            ? "bg-black text-white border-black"
-                            : "bg-white text-zinc-800 border-black hover:bg-zinc-50"
-                        }`}
-                      >
-                        <div className="flex items-start gap-1.5">
-                          <span className="font-black">{String.fromCharCode(65 + idx)}.</span>
-                          <span>{opt.text}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      if (selectedOpt !== null) {
-                        handleNextQuiz(QUIZ_QUESTIONS[quizStep].options[selectedOpt].points);
-                      }
-                    }}
-                    disabled={selectedOpt === null}
-                    className="w-full brutalist-button-dark py-3.5 text-xs leading-none"
-                  >
-                    Confirm Choice & Advance →
-                  </button>
                 </div>
-              ) : (
-                <div className="space-y-5 flex flex-col items-center justify-center text-center p-6 bg-white border-4 border-black shadow-[6px_6px_0px_#000] mt-2 animate-fade-in">
-                  <div className="text-5xl animate-bounce select-none">{getQuizVerdict(quizScore).badge}</div>
-                  <div>
-                    <span className="text-[10px] text-zinc-500 font-mono uppercase block font-black">REKHA REPORT VERDICT</span>
-                    <h4 className="font-display font-black text-black text-xl tracking-tight uppercase">
-                      {getQuizVerdict(quizScore).title}
-                    </h4>
+              </div>
+              
+              <div className="lg:col-span-5 bg-white rounded-2xl border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden h-[580px]">
+                {/* Decorative background stripe */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-rose-100 rounded-bl-full opacity-50 pointer-events-none" />
+                
+                <div className="space-y-6 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-rose-500 text-white flex items-center justify-center border-2 border-zinc-900 shadow-[2px_2px_0_#18181b]">
+                      <AlertTriangle className="w-6 h-6" />
+                    </div>
+                    <h3 className="text-xl font-black tracking-tight text-zinc-900 uppercase leading-snug">Roach Integrity<br/>Test</h3>
                   </div>
-                  <p className="font-mono text-xs text-zinc-700 leading-relaxed px-2">
-                    {getQuizVerdict(quizScore).desc}
+                  <p className="text-sm text-zinc-600 font-medium leading-relaxed">
+                    Submit raw credentials to calculate your room integrity index. Are you fit to lead or contaminated?
                   </p>
-                  <div className="text-xs font-black text-black bg-[#FFD700] px-4 py-1.5 border-2 border-black font-mono">
-                    SCORE INDEX: {quizScore} / {QUIZ_QUESTIONS.length * 10} UNITS
-                  </div>
-                  <button
-                    onClick={resetQuiz}
-                    className="brutalist-button-dark px-6 py-2.5 text-xs text-white"
-                  >
-                    Retest Biometrics
-                  </button>
+
+                  {!quizFinished ? (
+                    <div className="space-y-6 pt-2">
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-xs text-zinc-500 font-bold uppercase">
+                          <span>Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
+                        </div>
+                        <div className="w-full bg-zinc-100 h-2 rounded-full overflow-hidden border border-zinc-300">
+                          <div 
+                            className="h-full bg-zinc-900 duration-500 transition-all"
+                            style={{ width: `${((quizStep + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      <h4 className="text-zinc-900 font-black text-lg leading-tight">
+                        {QUIZ_QUESTIONS[quizStep].question}
+                      </h4>
+
+                      <div className="space-y-3 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                        {QUIZ_QUESTIONS[quizStep].options.map((opt, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setSelectedOpt(idx)}
+                            className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all font-bold ${
+                              selectedOpt === idx
+                                ? "bg-[#FFD700] text-zinc-900 border-zinc-900 shadow-[2px_2px_0_#18181b] translate-y-px"
+                                : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400 hover:text-zinc-900"
+                            }`}
+                          >
+                            <span className="opacity-70 mr-2">{String.fromCharCode(65 + idx)}.</span>
+                            <span>{opt.text}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (selectedOpt !== null) {
+                            handleNextQuiz(QUIZ_QUESTIONS[quizStep].options[selectedOpt].points);
+                          }
+                        }}
+                        disabled={selectedOpt === null}
+                        className="w-full bg-zinc-900 text-white rounded-xl py-3.5 text-sm font-black uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:opacity-50 border-2 border-zinc-900 shadow-[3px_3px_0_rgba(0,0,0,0.2)] active:translate-y-1 active:shadow-none"
+                      >
+                        Confirm Answer
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center p-6 bg-[#F4F4F0] rounded-xl border-2 border-zinc-900 shadow-inner mt-4 animate-fade-in space-y-4">
+                      <div className="text-5xl animate-bounce mb-2 drop-shadow-md">{getQuizVerdict(quizScore).badge}</div>
+                      <div>
+                        <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest block mb-1">Official Verdict</span>
+                        <h4 className="font-black text-zinc-900 text-xl uppercase">
+                          {getQuizVerdict(quizScore).title}
+                        </h4>
+                      </div>
+                      <p className="text-sm text-zinc-700 font-medium leading-relaxed">
+                        {getQuizVerdict(quizScore).desc}
+                      </p>
+                      <button
+                        onClick={resetQuiz}
+                        className="bg-white border-2 border-zinc-900 text-zinc-900 rounded-lg px-4 py-2 text-xs font-black uppercase hover:bg-zinc-100 transition-colors mt-2 shadow-[2px_2px_0_#18181b]"
+                      >
+                         Recalibrate
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </div>
+
+            {/* AI Auditor Section embedded minimally */}
+            <div className="bg-[#FFD700] rounded-3xl border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] p-6 md:p-12 flex flex-col xl:flex-row gap-8 lg:gap-12 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-20 rounded-full blur-3xl" />
+               <div className="xl:w-1/3 space-y-5 relative z-10">
+                 <div className="inline-flex py-1 px-3 bg-zinc-900 text-white rounded-md text-[10px] font-black uppercase tracking-widest border border-zinc-700">Gemini AI Module</div>
+                 <h3 className="text-3xl font-black tracking-tight text-zinc-900 uppercase">Rekha Auditor</h3>
+                 <p className="text-zinc-800 font-medium leading-relaxed">Advanced AI behavior analysis tool. Logs your daily routines to check against the sacred timeline and ensures compliance. Will mercilessly mock any CJP tendencies.</p>
+                 
+                 <div className="hidden xl:flex mt-8 rounded-2xl overflow-hidden border-2 border-zinc-900 shadow-[4px_4px_0_#18181b] bg-white h-[260px]">
+                    <div className="w-full h-full flex flex-col p-6 space-y-4">
+                      <div className="flex gap-2"><div className="w-3 h-3 rounded-full bg-red-500"/><div className="w-3 h-3 rounded-full bg-yellow-500"/><div className="w-3 h-3 rounded-full bg-green-500"/></div>
+                      <div className="w-full h-4 bg-zinc-100 rounded animate-pulse" />
+                      <div className="w-3/4 h-4 bg-zinc-100 rounded animate-pulse" />
+                      <div className="mt-auto pt-4 border-t-2 border-dashed border-zinc-300">
+                         <span className="text-xs font-bold text-zinc-400 uppercase">System Active...</span>
+                      </div>
+                    </div>
+                 </div>
+               </div>
+               
+               <div className="xl:w-2/3 bg-white rounded-2xl border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] relative overflow-y-auto max-h-[700px] no-scrollbar">
+                 <div className="p-4 md:p-6 min-h-full">
+                   <div className="transform origin-top scale-[0.9] md:scale-100 md:-mx-4">
+                     <RekhaAuditor />
+                   </div>
+                 </div>
+               </div>
             </div>
             
-            <p className="text-[10px] text-zinc-500 font-mono mt-4 border-t border-black/10 pt-2 text-center">
-              *Warning: Dishonesty triggers automatic chappal dispatch notifications.
-            </p>
-          </div>
-
-        </div>
-
-        {/* SECTION: AI Behavior Auditor Portal */}
-        <div id="ai-auditor" className="border-b-4 border-black bg-[#FFD700] p-4 sm:p-6 md:p-8">
-          <div className="max-w-6xl mx-auto">
-            <span className="bg-black text-white px-3 py-1 text-xs font-black uppercase tracking-widest mb-4 inline-block">
-              REKHA COMPLIANCE EXAMINER
-            </span>
-            <RekhaAuditor />
-          </div>
-        </div>
-
-        {/* SECTION: Mobile Task Force (Games & Scanners) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b-4 border-black bg-zinc-100">
-          {/* Left panel: Chappal Smash (Mobile Interactive) */}
-          <div className="lg:col-span-6 border-b-4 lg:border-b-0 lg:border-r-4 border-black bg-white p-4 sm:p-6 md:p-8 flex flex-col">
-             <ChappalSmashGame />
-          </div>
-
-          {/* Right panel: Rekha Oath Scanner (Mobile Interactive) */}
-          <div className="lg:col-span-6 bg-[#FFD700] p-4 sm:p-6 md:p-8 flex flex-col">
-             <RekhaOathScanner />
-          </div>
-        </div>
-
-        {/* SECTION: The Sacred Chalk Manifesto */}
-        <div id="manifesto" className="bg-white border-b-4 border-black p-6 sm:p-8 md:p-10 space-y-6">
-          <div className="border-b-2 border-black pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h3 className="font-display font-black text-black text-2xl tracking-tighter uppercase flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-black" /> THE SACRED LAW AMENDMENTS
-              </h3>
-              <p className="text-xs text-zinc-600 font-mono mt-1">
-                Constitution of the Lakshman Rekha Party. Drafting modern lines to solve lazy corners.
-              </p>
+            {/* Oath Scanner Container */}
+            <div className="max-w-md mx-auto aspect-square rounded-2xl overflow-hidden border-2 border-zinc-900 shadow-[6px_6px_0_#18181b] bg-zinc-900 relative">
+               <div className="absolute inset-0 p-4 md:p-6">
+                 <RekhaOathScanner />
+               </div>
             </div>
-            <span className="text-xs font-mono bg-[#FFD700] text-black border-2 border-black px-3 py-1 font-black">
-              CONSTITUTION OF LRP
-            </span>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-            {MANIFESTO_ITEMS.map((item) => (
-              <div 
-                key={item.id} 
-                className="bg-zinc-50 border-4 border-black p-5 space-y-3 relative overflow-hidden flex flex-col justify-between transition-all hover:scale-102 hover:shadow-[4px_4px_0_#000]"
-              >
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center border-b border-black/10 pb-1.5">
-                    <span className="text-[9px] bg-black text-white px-2 py-0.5 font-mono font-black uppercase">
-                      AMENDMENT {item.id}
+        {/* Container for Manifesto & Literature */}
+        <div className="w-full bg-[#FFD700] border-t-2 border-b-2 border-zinc-900">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-16">
+            
+            <div className="space-y-3 max-w-xl">
+              <h3 className="text-3xl font-black tracking-tight text-zinc-900 uppercase">The Sacred Law Amendments</h3>
+              <p className="text-zinc-800 font-bold">Drafting strict lines to solve lazy corners. Essential reading for all initiates.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {MANIFESTO_ITEMS.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="bg-white rounded-2xl p-6 md:p-8 border-2 border-zinc-900 space-y-6 shadow-[4px_4px_0_#18181b] hover:shadow-[8px_8px_0_#18181b] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    <div className="inline-flex py-1 px-2.5 rounded-lg bg-[#FFD700] text-zinc-900 text-[10px] font-black tracking-widest uppercase border-2 border-zinc-900">
+                      Amendment {item.id}
+                    </div>
+                    <h4 className="text-zinc-900 font-black tracking-tight h-12 flex items-center leading-tight">
+                      {item.unhumorousTitle}
+                    </h4>
+                    <p className="text-sm text-zinc-700 font-medium leading-relaxed">
+                      {item.comedyDetail}
+                    </p>
+                  </div>
+
+                  <div className="pt-6 border-t-2 border-dashed border-zinc-200 space-y-1.5">
+                    <span className="text-[10px] text-rose-500 font-black uppercase tracking-widest block">Penalty Clause</span>
+                    <p className="text-zinc-900 text-xs font-bold leading-tight">{item.punishment}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Typography / Assets */}
+            <div className="pt-8 max-w-xl">
+               <h3 className="text-3xl font-black tracking-tight text-zinc-900 uppercase">Digital Archive</h3>
+               <p className="text-zinc-800 font-bold mt-2">Historical records, visual assets, and high-contrast propaganda suitable for print.</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {MEME_POSTERS.map((post) => (
+                <div 
+                  key={post.id} 
+                  className="bg-white rounded-2xl border-2 border-zinc-900 p-4 lg:p-6 flex flex-col gap-6 shadow-[4px_4px_0_#18181b] hover:shadow-[6px_6px_0_#18181b] hover:-translate-y-1 transition-all group cursor-pointer"
+                >
+                  <div className="aspect-[4/3] bg-zinc-900 rounded-xl flex flex-col items-center justify-center text-center p-4 relative overflow-hidden group-hover:bg-zinc-800 transition-colors border-2 border-zinc-900 shadow-inner">
+                    <span className="text-4xl mb-3 opacity-90 group-hover:scale-110 transition-transform">
+                      {post.type === "warning" ? "🚨" : post.type === "rally" ? "📣" : post.type === "motivational" ? "💪" : "🩴"}
                     </span>
-                    <span className="text-zinc-500 font-mono text-[9px] font-bold">LRP-ACT</span>
+                    <h5 className="font-sans font-black text-xl text-[#FFD700] leading-tight uppercase tracking-tighter">
+                      {post.hindiSlogan}
+                    </h5>
                   </div>
-                  <h4 className="font-display font-black text-black text-sm tracking-tight uppercase">
-                    {item.unhumorousTitle}
-                  </h4>
-                  <p className="text-xs text-zinc-600 leading-relaxed font-sans">
-                    {item.comedyDetail}
-                  </p>
+                  <div className="flex items-center justify-between">
+                     <span className="text-xs text-zinc-600 font-bold line-clamp-2">"{post.slogan}"</span>
+                     <span className="text-zinc-900 text-[10px] font-black uppercase bg-[#FFD700] px-2 py-1 rounded md border-2 border-zinc-900 shadow-[2px_2px_0_#18181b] opacity-0 group-hover:opacity-100 transition-opacity ml-2">Print</span>
+                  </div>
                 </div>
-
-                <div className="pt-3 border-t-2 border-dashed border-black font-mono text-[10px] text-rose-600 leading-tight">
-                  <span className="text-black font-black uppercase text-[8px] block mb-0.5">LAWFUL PUNISHMENT</span>
-                  {item.punishment}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* SECTION: Media Assets / Meme Stickers */}
-        <div id="materials" className="bg-[#FFD700]/10 p-6 sm:p-8 md:p-10 space-y-6">
-          <div className="border-b-2 border-black pb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h3 className="font-display font-black text-black text-2xl tracking-tighter uppercase flex items-center gap-2">
-                <ImageIcon className="w-5 h-5 text-black" /> DIGITAL PROPAGANDA STICKERS
-              </h3>
-              <p className="text-xs text-zinc-600 font-mono mt-1">
-                Flat visual stickers crafted by our visual chanter division. High contrast and print-friendly!
-              </p>
+              ))}
             </div>
-            <span className="text-xs font-mono bg-black text-white border-2 border-black px-3 py-1 font-bold">
-              STICKER REPOSITORY
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
-            {MEME_POSTERS.map((post) => (
-              <div 
-                key={post.id} 
-                className="bg-white border-4 border-black p-5 flex flex-col justify-between relative overflow-hidden transition-all hover:scale-105 shadow-[4px_4px_0_#000] hover:shadow-[6px_6px_0_#000] group cursor-pointer"
-              >
-                {/* Visual mock image card */}
-                <div className="aspect-[4/3] bg-zinc-900 rounded-none border-2 border-black flex flex-col items-center justify-center text-center p-4 relative overflow-hidden group-hover:bg-black transition-colors">
-                  
-                  {/* Saffron S circle style decoration */}
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#FFD700] border-l-2 border-b-2 border-black" />
-
-                  {/* Icon depending on type */}
-                  <span className="text-4xl z-10 mb-2 truncate">
-                    {post.type === "warning" ? "🚨" : post.type === "rally" ? "📣" : post.type === "motivational" ? "💪" : "🩴"}
-                  </span>
-
-                  <h5 className="font-banner text-3xl text-white tracking-widest z-10 block truncate max-w-full">
-                    {post.hindiSlogan}
-                  </h5>
-                  <p className="text-[10px] text-zinc-300 italic font-mono leading-tight max-w-full truncate">
-                    "{post.slogan}"
-                  </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between font-mono text-[10px] border-t border-black/10 pt-3">
-                  <div>
-                    <span className="text-zinc-500 text-[8px] block uppercase font-bold">STICKER VIBE</span>
-                    <span className="text-black font-extrabold">{post.vibe}</span>
-                  </div>
-                  <span className="text-black font-black uppercase text-[10px] underline underline-offset-2">PRINT →</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="p-4 bg-white border-2 border-black shadow-[4px_4px_0_#000] font-mono text-xs text-black text-center uppercase tracking-widest leading-loose font-black mt-4">
-            ⚡ MATERIALS CAPACITY: 100% EXCEL CHALK CONCENTRATE • SECURE YOUR SPACE WITH DISCIPLINE ⚡
           </div>
         </div>
 
       </div>
 
-      {/* Brutalist Footer matches Design HTML marquee feel */}
-      <footer className="mt-12 w-full border-t-8 border-black bg-black text-white py-8 px-6 text-center font-mono text-[10px] tracking-wide relative">
-        <div className="whitespace-nowrap flex justify-center gap-6 sm:gap-12 text-xs font-black uppercase tracking-[0.2em] mb-6 overflow-hidden border-b border-zinc-800 pb-4">
-          <span>STAY IN YOUR LANE</span>
+      {/* Modern Satire Footer */}
+      <footer className="w-full bg-zinc-900 py-16 px-6 relative flex flex-col items-center overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFD700] opacity-10 rounded-bl-full pointer-events-none" />
+        
+        <div className="flex gap-4 sm:gap-8 text-[10px] sm:text-xs font-black text-[#FFD700] uppercase tracking-widest mb-10 flex-wrap justify-center relative z-10">
+          <span>Discipline</span>
           <span>•</span>
-          <span>DRAW THE LINE</span>
+          <span>Boundaries</span>
           <span>•</span>
-          <span>NO COCKROACH ALLOWED</span>
-          <span>•</span>
-          <span>LRP PARODY 2026</span>
-          <span>•</span>
-          <span>STAY IN YOUR LANE</span>
+          <span>Integrity</span>
         </div>
         
-        <p className="mb-2 leading-relaxed max-w-2xl mx-auto text-zinc-400">
-          DISCLAIMER & LEGAL VERDICT: This portal is an interactive satirical parody web application designed around community humor and Indian Gen Z memes. It is NOT a real political organization, party, or system. All features, voter credentials, and game mechanics are for entertainment and amusement purposes.
+        <p className="text-xs text-zinc-400 max-w-xl text-center leading-loose font-bold relative z-10">
+          DISCLAIMER & LEGAL VERDICT: This portal is an interactive satirical parody web application designed around community humor and Gen Z memes. It is NOT a real political organization, party, or system. 
         </p>
-        <p className="uppercase mt-4 text-[#FFD700] font-black tracking-[0.1em]">
-          © {new Date().getFullYear()} LAKSHMAN REKHA PARTY (LRP) • STICKER & CHALK REGISTRY SERVICES LIMIT
+        
+        <p className="mt-10 text-[10px] text-zinc-500 font-black tracking-widest uppercase relative z-10">
+          © {new Date().getFullYear()} LAKSHMAN REKHA PARTY. Chalk reserved.
         </p>
       </footer>
-
     </div>
   );
 }
